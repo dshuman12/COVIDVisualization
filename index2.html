@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        function handleFiles(file) {
+        // Check for the various File API support.
+        if (window.FileReader) {
+            // FileReader are supported.
+            return getAsText(file);
+        } else {
+            alert('FileReader are not supported in this browser.');
+        }
+        }
+
+        function getAsText(fileToRead) {
+            var reader = new FileReader();
+            // Read file into memory as UTF-8      
+            reader.readAsText(fileToRead);
+            // Handle errors load
+            reader.onload = loadHandler;
+            reader.onerror = errorHandler;
+            }
+
+            function loadHandler(event) {
+            return event.target.result;
+        }
+
+        function processData(csv) {
+            var allTextLines = csv.split(/\r\n|\n/);
+            var lines = [];
+            for (var i=0; i<allTextLines.length; i++) {
+                var data = allTextLines[i].split(';');
+                    var tarr = [];
+                    for (var j=0; j<data.length; j++) {
+                        tarr.push(data[j]);
+                    }
+                    lines.push(tarr);
+            }
+        return lines;
+        }
+
+        function errorHandler(evt) {
+            if(evt.target.error.name == "NotReadableError") {
+                alert("Canno't read file !");
+            }
+        }
+      google.charts.load('current', {
+        'packages':['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+      });
+      var fs = require('fs');
+      var textByLine = fs.readFileSync('C:/Users/dshum/OneDrive - Harvard University/Extra Curriculars/Loreal/updated_data.txt').toString();
+      //let text = readTextFile('C:/Users/dshum/OneDrive - Harvard University/Extra Curriculars/Loreal/updated_data.txt');
+      //var fs = require("fs");
+      //var text = fs.readFileSync("./updated_data.txt");
+      //let r = getAsText('updated_data.txt');
+      //const fileUrl = 'C:Users/dshum/OneDrive - Harvard University/Extra Curriculars/Loreal/updated_data.txt'; //'https://github.com/yaosarayin/yaosarayin.github.io/blob/master/updated_data.txt'; // provide file location
+        //fetch(fileUrl, {mode: 'no-cors'})
+        //.then( r => r.text() )
+        //.then( t => console.log(t) )
+      //let csv = getAsText('updated_data.txt');
+      //let arr = processData(r);
+      //let csv = reader.readAsText("04-20-2020.csv");
+      //let array = CSVToArray(csv, ',');
+
+      google.charts.setOnLoadCallback(drawRegionsMap);
+      function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable(
+            [['latitude', 'longitude', 'cases'],
+            [-14.271, -170.132, 0],
+            [13.4443, 144.7937, 133],
+            [15.0979, 145.6739, 6],
+            [18.2208, -66.5901, 10000000],
+            ]);
+            var options = {
+            displayMode: 'markers',
+            colorAxis: {colors: ['red', 'blue']}
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="regions_div" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>
